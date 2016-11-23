@@ -1,0 +1,21 @@
+#!/usr/bin/env ruby
+
+require_relative 'export_cleaner'
+
+if (ARGV.length != 1) then
+  puts "anz-csv-export-cleaner [path to import CSV]"
+  exit
+end
+
+import_path = ARGV[0]
+export_path = "#{import_path.split('.')[-2]}.cleaned.csv"
+
+# begin
+  export_cleaner = ExportCleaner.new(import_path, export_path)
+  export_cleaner.build_clean_file
+# rescue StandardError => message
+#   puts "Couldn't clean the file: #{message}"
+#   exit
+# end
+
+puts "Export complete."
