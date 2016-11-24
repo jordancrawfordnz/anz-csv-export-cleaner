@@ -70,7 +70,7 @@ class ExportCleaner
     clean_row = []
     amount = import_row[AMOUNT_FIELD].to_f
     clean_row[0] = import_row[DATE_FIELD]
-    clean_row[1] = amount.abs
+    clean_row[1] = amount
     clean_row[2] = amount > 0 ? CREDIT_VALUE : DEBIT_VALUE
     clean_row[3] = clean_detail_field(import_row)
 
