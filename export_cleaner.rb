@@ -10,7 +10,9 @@ class ExportCleaner
   DATE_FIELD = "Date"
   DEBIT_VALUE = "DR"
   CREDIT_VALUE = "CR"
-  DETAILS_FIELD_SEPERATOR = " - "
+  VISA_PURCHASE_TYPE = "Visa Purchase"
+  EFTPOS_PURCHASE_TYPE = "Eft-Pos"
+
   CLEAN_HEADER = [DATE_FIELD, AMOUNT_FIELD, TYPE_FIELD, DETAILS_FIELD]
 
   def initialize(import_path, export_path)
@@ -30,32 +32,36 @@ class ExportCleaner
     end
   end
 
+  def use_field(field_value)
+    field_value && field_value.length > 0
+  end
+
   def clean_detail_field(import_row)
     details_fields = []
-    if (import_row[CODE_FIELD] && import_row[CODE_FIELD].length > 0)
+    type = import_row[TYPE_FIELD]
+
+    if(use_field(import_row[DETAILS_FIELD]) && type != VISA_PURCHASE_TYPE)
+      details_fields.push(import_row[DETAILS_FIELD])
+    end
+
+    if(use_field(import_row[PARTICULARS_FIELD]) && type != VISA_PURCHASE_TYPE && type != EFTPOS_PURCHASE_TYPE)
+      details_fields.push(import_row[PARTICULARS_FIELD])
+    end
+
+    if(use_field(import_row[CODE_FIELD]) && type != EFTPOS_PURCHASE_TYPE)
       details_fields.push(import_row[CODE_FIELD])
     end
 
-    # "Visa Purchase" shouldn't show the Details field.
-    # Eft-Pos shouldn't show Particulars
-    # Visa Purchase shouldn't have the Reference.
-    # Eft-Pos shouldn't have the Reference.
-
-    # Should type be shown?
-    # Code and Reference should link Particulars, Code and Reference
+    if(use_field(import_row[REFERENCE_FIELD]) && type != VISA_PURCHASE_TYPE && type != EFTPOS_PURCHASE_TYPE)
+      details_fields.push(import_row[REFERENCE_FIELD])
+    end
 
     details_field_result = ""
-    details_fields.each_with_index do |detail_field, index|
-      details_field_result << detail_field
-      unless (index == details_fields.length - 1)
-        details_field_result << DETAILS_FIELD_SEPERATOR
-      end
+    details_fields.each do |detail_field|
+      details_field_result << "#{detail_field} "
     end
-    details_field_result
 
-    # # TODO: Improve this.
-    # clean_row[3] = "#{import_row["Particulars"]} #{import_row["Code"]} #{import_row["Reference"]} - #{import_row["Details"]} #{import_row["Type"]}"
-    #
+    details_field_result
   end
 
   def build_clean_row(import_row)
