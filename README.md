@@ -1,9 +1,38 @@
 # ANZ CSV Export Cleaner
-I wanted to be able to import my CSV file's into [Goodbudget](https://goodbudget.com/). The CSV files from ANZ have a bunch of extra fields that Goodbudget can't handle. This produces a clean CSV file from these ANZ CSV's to make it easy to identify transactions in Goodbudget.
+ANZ Bank's CSV export contains many fields, making it difficult to identify transactions. This Gem simplifies these fields, making the file easier to use.
 
-## Running
+Original fields:
+- Type
+- Details
+- Particulars
+- Code
+- Reference
+- Amount
+- Date
+- ForeignCurrencyAmount
+- ConversionCharge
+
+New fields:
+- Date
+- Amount
+- Type (DR or CR)
+- Details
+
+The Details field is determined using these additional fields, with information that does not help identify transactions being excluded.
+
+## Using as a Gem
+Run ``gem install anz_bank_csv_cleaner`` to install the Gem, then use as follows:
+
+```
+require anz_bank_csv_cleaner
+
+cleaner = ANZBankCSVCleaner.new(import_path: [path to CSV file from ANZ], export_path: [desired path for CSV export])
+cleaner.run
+```
+
+## Running on the command line
 Ensure Ruby is installed on your system.
 
-```anz-csv-export-cleaner [path to import CSV]```
+```./anz-csv-export-cleaner [path to import CSV]```
 
 An exported CSV will be created under the same name with `.cleaned` before the file extension.

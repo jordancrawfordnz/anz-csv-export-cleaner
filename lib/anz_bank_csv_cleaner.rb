@@ -1,6 +1,6 @@
 require 'CSV'
 
-class ExportCleaner
+class ANZBankCSVCleaner
   TYPE_FIELD = "Type"
   DETAILS_FIELD = "Details"
   PARTICULARS_FIELD = "Particulars"
@@ -15,7 +15,7 @@ class ExportCleaner
 
   CLEAN_HEADER = [DATE_FIELD, AMOUNT_FIELD, TYPE_FIELD, DETAILS_FIELD]
 
-  def initialize(import_path, export_path)
+  def initialize(import_path:, export_path:)
       @import_path = import_path
       @export_path = export_path
 
@@ -23,6 +23,16 @@ class ExportCleaner
         raise StandardError.new("No input file")
       end
   end
+
+  def run
+    CSV.open(@export_path, "w", :write_headers => true, :headers => CLEAN_HEADER) do |clean_csv|
+      CSV.foreach(@import_path, :headers => true) do |import_row|
+        clean_csv << build_clean_row(import_row)
+      end
+    end
+  end
+
+  private
 
   def check_required_fields(import_row)
     if !import_row[DATE_FIELD]
@@ -75,13 +85,5 @@ class ExportCleaner
     clean_row[3] = clean_detail_field(import_row)
 
     clean_row
-  end
-
-  def build_clean_file
-    CSV.open(@export_path, "w", :write_headers => true, :headers => CLEAN_HEADER) do |clean_csv|
-      CSV.foreach(@import_path, :headers => true) do |import_row|
-        clean_csv << build_clean_row(import_row)
-      end
-    end
   end
 end
