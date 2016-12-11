@@ -12,7 +12,7 @@ Original fields:
 - ForeignCurrencyAmount
 - ConversionCharge
 
-New fields:
+Cleaned fields:
 - Date
 - Amount
 - Type (DR or CR)
@@ -26,7 +26,10 @@ Run ``gem install anz_bank_csv_cleaner`` to install the Gem, then use as follows
 ```
 require anz_bank_csv_cleaner
 
-cleaner = ANZBankCSVCleaner.new(import_path: [path to CSV file from ANZ], export_path: [desired path for CSV export])
+cleaner = ANZBankCSVCleaner.new(
+  import_path: [path to CSV file from ANZ],
+  export_path: [desired path for CSV export]
+)
 cleaner.run
 ```
 
