@@ -1,6 +1,12 @@
 # ANZ CSV Export Cleaner
 ANZ Bank's CSV export contains many fields, making it difficult to identify transactions. This Gem simplifies these fields, making the file easier to use.
 
+---
+
+**Please note:** This Gem is not actively maintained and it may no longer work.
+
+---
+
 Original fields:
 - Type
 - Details
